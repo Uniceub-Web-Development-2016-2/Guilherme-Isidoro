@@ -1,6 +1,6 @@
 <?php
 $nome "maisde6";
-if ($nome > strlen ( string $nome )) {
+if (strlen(nome)>6) {
 echo "maior que 6";
 } else {
   echo "olha aí";
