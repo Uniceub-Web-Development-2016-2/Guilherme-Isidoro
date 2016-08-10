@@ -56,11 +56,17 @@
 		}
 
 		public function toString(){
-			$url = $getProtocol()."://".$getIP()."/".getResources."?";
+			$url = $this->getProtocol()."://".$this->getIP()."/".$this->getResource()."?";
+			$parameter = "";
+			foreach($this->Parameters as $key => $value){
+				$parameter = $parameter.$key."=".$value."&";
+
+			}
+			$url = $url.$parameter;
 			return $url;
 		}	
 	}
 
-	$request = new Request("method", "https", "12345678", "resource", array("par1"=>123,"par2"=>1234);
+	$request = new Request("method", "https", "12345678", "resource", array("par1"=>123,"par2"=>1234));
 
 	echo $request->toString(); 
