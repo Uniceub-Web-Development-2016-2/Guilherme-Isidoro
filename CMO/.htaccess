@@ -1,0 +1,14 @@
+RewriteEngine on
+RedirectMatch 301 /routes/allRoutes /CMO/all-routes.php/routes
+RedirectMatch 301 /routes/routeByGeolocation /CMO/route-by-geolocation.php/routes?latitude=100&longitude=200&ending_point=CRUZEIRONOVO
+RedirectMatch 301 /routes/routeByLocationName /CMO/route-by-location-name.php/routes?starting_point=CRUZEIRONOVO&ending_point=CRUZEIRONOVO
+RedirectMatch 301 /routes/findByRouteNumber /CMO/find-by-route-number.php/routes?id=0.151
+RedirectMatch 301 /vehicle/routeLocation /CMO/route-location.php/vehicle?id=0.151
+RedirectMatch 301 /vehicle/nextDeparture /CMO/next-departure.php/vehicle?id=0.151
+RedirectMatch 301 /user/userID /CMO/user-ID.php/user?id=1
+RedirectMatch 301 /user/userLocation /CMO/user-location.php/user?id=1
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.php [L]
+
+
