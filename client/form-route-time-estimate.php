@@ -128,7 +128,7 @@
 								$travel = json_decode($googleResponse, true);
 								if ($travel['status'] == 'INVALID_REQUEST') {
 									echo "Seu browser não permite o compartilhamento da sua localização ou você está muito distante.";
-								} else if ($travel['status'] == 'OK'){
+								} else if ($travel['status'] == 'OK') {
 									echo '<label for="next">Distância: </label>'.($travel['rows'][0]['elements']['0']['distance']['text'].'<br><br>');
 									echo '<label for="next">Tempo de chegada: </label>'.($travel['rows'][0]['elements']['0']['duration']['text'].'<br><br>');
 									echo 'Valores cedidos pela Google';

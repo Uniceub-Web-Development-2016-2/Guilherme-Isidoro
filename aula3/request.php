@@ -1,5 +1,5 @@
 <?php
-	class Request{
+	class Request {
 		
 		private $Method;
 		private $Protocol;
@@ -8,7 +8,7 @@
 		private $Resource;
 		private $Parameters;
 		
-		public function __construct($method, $protocol, $ip, $remote_ip, $resource, $parameters){
+		public function __construct($method, $protocol, $ip, $remote_ip, $resource, $parameters) {
 			$this->Method = $method;
 			$this->Protocol = $protocol;
 			$this->IP = $ip;
@@ -16,43 +16,43 @@
 			$this->Resource = $resource;
 			$this->Parameters = $parameters;
 		}
-		public function getProtocol(){
+		public function getProtocol() {
 			return $this->Protocol;
 		}
-		public function getMethod(){
+		public function getMethod() {
 			return $this->Method;
 		}
-		public function getIP(){
+		public function getIP() {
 			return $this->IP;
 		}
-		public function getremote_IP(){
+		public function getremote_IP() {
 			return $this->remote_IP;
 		}
-		public function getResource(){
+		public function getResource() {
 			return $this->Resource;
 		}
-		public function getParameters(){
+		public function getParameters() {
 			return $this->Parameters;
 		}
-		public function setProtocol($protocol){
+		public function setProtocol($protocol) {
 			$this->Protocol = $protocol;
 		}
-		public function setMethod($method){
+		public function setMethod($method) {
 			$this->Method = $method;
 		}
-		public function setIP($ip){
+		public function setIP($ip) {
 			$this->IP = $ip;
 		}
-		public function setremote_IP($remote_ip){
+		public function setremote_IP($remote_ip) {
 			$this->remote_IP = $remote_ip;
 		}
-		public function setResource($resource){
+		public function setResource($resource) {
 			$this->Resource = $resource;
 		}
-		public function setParameters($parameters){
+		public function setParameters($parameters) {
 			$this->Parameters = $parameters;
 		}
-		public function toString(){
+		public function toString() {
 			$url = $getProtocol()."://".$getIP()."/".getResources."?";
 			return $url;
 		}	

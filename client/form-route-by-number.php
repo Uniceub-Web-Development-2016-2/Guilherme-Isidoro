@@ -103,10 +103,10 @@
 
 								$response = \Httpful\Request::get($get_request)->send();
 								$arr = json_decode($response->body, true);
-								if (count($arr) <= 0){
+								if (count($arr) <= 0) {
 									echo '<tr><td></td><td></td><td>Esta linha nao existe</td><td></td><td></td><td></td></tr>';
 								} else {
-									foreach ($arr as $key =>$value){
+									foreach ($arr as $key =>$value) {
 									echo '<tr><td>'.$value['id'].'</td>'.'<td>'.$value['starting_point'].'</td>'.'<td>'.$value['ending_point'].'</td>'.'<td>'.$value['fare'].'</td>'.'<td>'.$value['extension'].'</td>'.'<td>'.$value['denomination'].'</td></tr>';	
 									}
 								}

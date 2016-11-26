@@ -5,7 +5,7 @@ include_once ('db_manager.php');
 
 class ResourceController
 {	
- 	private $METHODMAP = ['GET' => 'search' , 'POST' => 'create' , 'PUT' => 'update', 'DELETE' => 'remove' ];
+ 	private $METHODMAP = ['GET' => 'search', 'POST' => 'create', 'PUT' => 'update', 'DELETE' => 'remove'];
 	
 	public function treat_request($request) {
 		if ($request->getResource2() == 'routeEstimate') {
@@ -24,12 +24,12 @@ class ResourceController
 		
 	}
 
-	private function get_route_by_name ($request) {
+	private function get_route_by_name($request) {
 		$query = 'SELECT * FROM routes r WHERE r.starting_point like "%'.$request->getParameters()['starting_point'].'%" and 			r.ending_point like 			"%'.$request->getParameters()['ending_point'].'%"';
 		return self::select($query);
 	}
 
-	private function getLatLon($request){		
+	private function getLatLon($request) {		
 		$params = str_replace('_', '.', self::queryParams($request->getParameters()));
 		$query = 'SELECT r.latitude, r.longitude FROM routes r WHERE r.id = '.substr($params, 0, -5);
 		
@@ -51,13 +51,13 @@ class ResourceController
 	}
 
 	private function update($request) {
-               $body = $request->getBody();
-               $resource = $request->getResource();
-               $query = 'UPDATE '.$resource.' SET '. $this->getUpdateCriteria($body);
-               //var_dump($query);
+			   $body = $request->getBody();
+			   $resource = $request->getResource();
+			   $query = 'UPDATE '.$resource.' SET '. $this->getUpdateCriteria($body);
+			   //var_dump($query);
 	//die();
 		return self::execution_query($query);
-        }
+		}
 
 	private function create($request) {		
 		$body = $request->getBody();
@@ -72,12 +72,12 @@ class ResourceController
 	private function queryParams($params) {
 		
 		$query = "";		
-		foreach($params as $key => $value) {
+		foreach ($params as $key => $value) {
 			$query .= $key.' = '."'".$value."'".' AND ';	
 		}
-		$query = substr($query,0,-5);
+		$query = substr($query, 0, -5);
 		if ($query == null) {
-			$query.=1;		
+			$query .= 1;		
 		} 
 		return $query;
 	}
@@ -93,8 +93,8 @@ class ResourceController
 		$criteria = "";
 		$where = " WHERE ";
 		$array = json_decode($json, true);
-		foreach($array as $key => $value) {
-			if($key != 'id')
+		foreach ($array as $key => $value) {
+			if ($key != 'id')
 				$criteria .= $key." = '".$value."',";
 			
 		}
@@ -110,13 +110,13 @@ class ResourceController
 	}
 
 	private function getValues($json)
-        {
-                $array = json_decode($json, true);
-                $values = array_values($array);
-                $string = implode("','", $values);
+		{
+				$array = json_decode($json, true);
+				$values = array_values($array);
+				$string = implode("','", $values);
 		return "'".$string."'";
         
-        }
+		}
 
 	
 }
