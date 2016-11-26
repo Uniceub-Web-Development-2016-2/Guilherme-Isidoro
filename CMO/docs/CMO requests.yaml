@@ -1,0 +1,654 @@
+swagger: '2.0'
+info:
+  title: Cadê meu ônibus API
+  version: "1.0.5"
+
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /routes/allRoutes:
+    get:
+      summary: All available routes.
+      description: |
+        Returns all available routes on user's city. Response includes all available routes and its starting point, end stop and schedules.
+      parameters:
+        - name: user_city
+          in: query
+          description: City where user is currently located.
+          required: true
+          type: string
+      tags:
+        - Routes
+      responses:
+        200:
+          description: An array of routes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        501:
+          description: User current city is not supported yet
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /routes/routeByGeolocation?latitude={user_latitude}&longitude={user_longitude}&ending_point={destination}:
+    get:
+      summary: Routes to a specific location.
+      description: |
+        Returns all available routes to a given location that can reach user current region.
+      parameters:
+        - name: user_latitude
+          in: path
+          description: Latitude component of user location.
+          required: true
+          type: number
+          format: double
+        - name: user_longitude
+          in: path
+          description: Longitude component of user location.
+          required: true
+          type: number
+          format: double
+        - name: destination
+          in: path
+          description: User desired location name.
+          required: true
+          type: string
+      tags:
+        - Routes
+      responses:
+        200:
+          description: An array of routes that reach user desired location.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        404:
+          description: No routes found to this location
+        501:
+          description: User current city is not supported yet
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /routes/routeByLocationName?starting_point={user_location}&ending_point={destination}:
+    get:
+      summary: Routes to a specific location by its name.
+      description: |
+        Returns all available routes to a given location that can reach user current region.
+      parameters:
+        - name: user_location
+          in: path
+          description: User current location.
+          required: true
+          type: string
+        - name: destination
+          in: path
+          description: User destination name.
+          required: true
+          type: string
+      tags:
+        - Routes
+      responses:
+        200:
+          description: An array of routes that reach user desired location.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        404:
+          description: No routes found to this location
+        501:
+          description: User current city is not supported yet
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /routes/findByRouteNumber?id={route_number}:
+    get:
+      summary: Search for specific route.
+      parameters:
+        - name: user_city
+          in: query
+          description: City where user is currently located.
+          required: true
+          type: string
+        - name: route_number
+          in: path
+          description: Desired route number.
+          required: true
+          type: string
+      tags:
+        - Routes
+      responses:
+        200:
+          description: A route
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        404:
+          description: Route not found
+        501:
+          description: User current city is not supported yet
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /routes/routeEstimate:
+    get:
+      summary: Estimate time for a route to get to a user.
+      parameters:
+        - name: route_number
+          in: query
+          description: Desired route number.
+          required: true
+          type: string
+        - name: user_latitude
+          in: query
+          description: User current latitude.
+          required: true
+          type: number
+          format: double
+        - name: user_longitude
+          in: query
+          description: User current longitude.
+          required: true
+          type: number
+          format: double
+      tags:
+        - Routes
+      responses:
+        200:
+          description: Time estimate
+          schema:
+            type: string
+            format: time
+        404:
+          description: Route not found
+        501:
+          description: User current city is not supported yet
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /routes/newRoute:
+    post:
+      summary: New Route
+      description: Creates a new route. Duplicates are not allowed.
+      parameters:
+        - name: route_starting_point
+          in: query
+          description: New route starting point.
+          required: true
+          type: string
+        - name: route_end_stop
+          in: query
+          description: New route ending point.
+          required: true
+          type: string
+        - name: route_number
+          in: query
+          type: string
+          description: New route number and unique identifier.
+          required: true
+        - name: fare
+          in: query
+          type: number
+          format: double
+          description: New route fare.
+          required: true
+        - name: extension
+          in: query
+          type: string
+          description: New route course extension.
+          required: true
+        - name: denomination
+          in: query
+          type: string
+          description: New route denomination.
+          required: true
+        - name: company
+          in: query
+          type: string
+          description: New route responsible company.
+          required: true
+        - name: city
+          in: query
+          type: string
+          description: City to which the route belongs.
+          required: true
+        - name: schedule
+          in: body
+          description: New route schedule.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Schedule'
+          required: true
+      tags:
+        - Routes
+      responses:
+        200:
+          description: New route have been created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        403:
+          description: Forbbiden
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /routes/editRoute:
+    put:
+      summary: Edit Route
+      description: Update an existing route.
+      parameters:
+        - name: route_starting_point
+          in: query
+          description: New route starting point.
+          required: false
+          type: string
+        - name: route_end_stop
+          in: query
+          description: New route ending point.
+          required: false
+          type: string
+        - name: route_number
+          in: query
+          type: string
+          description: New route number and unique identifier.
+          required: false
+        - name: fare
+          in: query
+          type: number
+          format: double
+          description: New route fare.
+          required: false
+        - name: extension
+          in: query
+          type: string
+          description: New route course extension.
+          required: false
+        - name: denomination
+          in: query
+          type: string
+          description: New route denomination.
+          required: false
+        - name: company
+          in: query
+          type: string
+          description: New route responsible company.
+          required: false
+        - name: city
+          in: query
+          type: string
+          description: City to which the route belongs.
+          required: false
+        - name: schedule
+          in: body
+          description: New route schedule.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Schedule'
+          required: false
+      tags:
+        - Routes
+      responses:
+        200:
+          description: Route have been updated
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        403:
+          description: Forbbiden
+        404:
+          description: Route not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /routes/deleteRoute/route_number:
+    delete:
+      summary: Delete a specific route.
+      parameters:
+        - name: route_number
+          in: query
+          description: Route to be deleted.
+          required: true
+          type: string
+      tags:
+        - Routes
+      responses:
+        200:
+          description: A route
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routes'
+        404:
+          description: Route not found
+        403:
+          description: Forbbiden
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /vehicle/routeLocation/?id={routeNumber}:
+    get:
+      summary: Get route current location
+      parameters:
+        - name: routeNumber
+          in: path
+          description: route number.
+          required: true
+          type: string
+      tags:
+        - Routes
+      responses:
+        200:
+          description: User location found
+          schema:
+            $ref: '#/definitions/RouteLocation'
+        403:
+          description: Forbbiden
+        404:
+          description: Route not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /routes/nextDeparture?id={routeNumber}:
+    get:
+      summary: Get specific route next departure
+      parameters:
+        - name: routeNumber
+          in: path
+          description: route number.
+          required: true
+          type: string
+        - name: userTime
+          in: query
+          description: user time.
+          required: true
+          type: string
+          format: time
+      tags:
+        - Routes
+      responses:
+        200:
+          description: Route next departure
+          schema:
+            type: string
+            format: time
+        403:
+          description: Forbbiden
+        404:
+          description: Route not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/newUser:
+    post:
+      summary: New User
+      description: Creates a new user.
+      parameters:
+        - name: name
+          in: query
+          description: User name.
+          required: true
+          type: string
+        - name: city
+          in: query
+          description: City where user wants to use the application.
+          required: true
+          type: string
+        - name: favorite_routes
+          in: body
+          description: User favorite routes.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FavoriteRoutes'
+          required: false
+      tags:
+        - User
+      responses:
+        200:
+          description: New user have been created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        501:
+          description: City is not supported yet
+        403:
+          description: Forbbiden
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/userID?id={userId}:
+    get:
+      summary: Search user by ID
+      parameters:
+        - name: userId
+          in: path
+          description: User ID.
+          required: true
+          type: integer
+      tags:
+        - User
+      responses:
+        200:
+          description: User found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        403:
+          description: Forbbiden
+        404:
+          description: User not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/{userId}/updateUser:
+    put:
+      summary: Update user by ID
+      parameters:
+        - name: userId
+          in: path
+          description: User ID.
+          required: true
+          type: integer
+        - name: name
+          in: query
+          description: User name.
+          required: false
+          type: string
+        - name: city
+          in: query
+          description: User city
+          required: false
+          type: string
+        - name: favorite_routes
+          in: body
+          description: User favorite routes.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FavoriteRoutes'
+          required: false
+      tags:
+        - User
+      responses:
+        200:
+          description: User updated
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        403:
+          description: Forbbiden
+        404:
+          description: User not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/{userId}/deleteUser:
+    delete:
+      summary: Delete user by ID
+      parameters:
+        - name: userId
+          in: path
+          description: User ID.
+          required: true
+          type: integer
+      tags:
+        - User
+      responses:
+        200:
+          description: User deleted
+        403:
+          description: Forbbiden
+        404:
+          description: User not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/userLocation?id={userId}:
+    get:
+      summary: get user location
+      parameters:
+        - name: userId
+          in: path
+          description: User ID.
+          required: true
+          type: integer
+      tags:
+        - User
+      responses:
+        200:
+          description: User location found
+          schema:
+            $ref: '#/definitions/UserLocation'
+        403:
+          description: Forbbiden
+        404:
+          description: User not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+
+  Routes:
+    type: object
+    properties:
+      route_number:
+        type: string
+        description: Unique identifier representing a specific route.
+      start_point:
+        type: string
+        description: Route starting point.
+      end_point:
+        type: string
+        description: Route ending point.
+      fare:
+        type: number
+        format: double
+        description: Route fare.
+      company:
+        type: string
+        description: Route responsible company.
+      city:
+        type: string
+        description: City to which the route belongs.
+      schedule:
+        type: array
+        items: 
+          $ref: '#/definitions/Schedule'
+        description: Route schedule.
+        
+  User:
+    type: object
+    properties:
+      ID:
+        type: number
+        format: integer
+        description: Unique identifier representing a specific user.
+      name:
+        type: string
+        description: User name.
+      city:
+        type: string
+        description: City where user wants to use the application.
+      fav_routes:
+        type: array
+        items:
+          $ref: '#/definitions/FavoriteRoutes'
+        description: User favorite routes.
+        
+  FavoriteRoutes:
+    type: object
+    properties:
+      route_number:
+        type: string
+        description: User favorite routes.
+        
+  Schedule:
+    type: object
+    properties:
+      schedule:
+        type: string
+        format: date
+        description: Given route schedule.
+        
+  UserLocation:
+    type: object
+    properties:
+      latitude:
+        type: number
+        format: double
+        description: Given user latitude.
+      longitude:
+        type: number
+        format: double
+        description: Given user longitude
+        
+  RouteLocation:
+    type: object
+    properties:
+      latitude:
+        type: number
+        format: double
+        description: Given route latitude.
+      longitude:
+        type: number
+        format: double
+        description: Given route longitude
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
