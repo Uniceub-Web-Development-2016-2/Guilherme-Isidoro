@@ -1,0 +1,9 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RedirectMatch 301 /client/form-location.html /client/501.html
+RedirectMatch 301 /client/form-track-route.html /client/501.html
+RewriteRule . index.html [L]
+
+
